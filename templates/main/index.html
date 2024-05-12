@@ -1,0 +1,276 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="row mt-4">
+    <div class="container-fluid py-4">
+      <div class="row">
+        <!-- Profile Section -->
+        <div class="col-lg-12 mb-4">
+          <div class="card mb-4">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-auto">
+                  <!-- Profile picture -->
+                  <div class="avatar avatar-xl position-relative">
+                    {% if user.pic %}
+                      
+                    <img src="{{user.pic.url}}" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+                    {% else %}
+                    <img src="{% static 'assets/img/profile.png' %}" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="col-auto my-auto">
+                  <div class="h-100">
+                    <h5 class="mb-1">
+                      {{user.first_name}} {{user.last_name}}
+                    </h5>
+                    <p class="mb-0 font-weight-bold text-sm">
+                      Employee ID: {{user.employee_generated_id}}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="numbers">
+                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Your Eligible Salary</p>
+                            <h5 class="font-weight-bolder">
+                                ${{request.user.eligible_salary}}
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-4 text-end">
+                        <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+                            <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="numbers">
+                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Absences This Month</p>
+                            <h5 class="font-weight-bolder">
+                                {{absences_count}} Times
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-4 text-end">
+                        <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
+                            <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="numbers">
+                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Deduction</p>
+                            <h5 class="font-weight-bolder">
+                              ${{ deduction}}
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-4 text-end">
+                        <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                            <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6">
+        <div class="card">
+            <div class="card-body p-3">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="numbers">
+                            <p class="text-sm mb-0 text-uppercase font-weight-bold">Role - Department</p>
+                            <h5 class="font-weight-bolder">
+                                {{role_name}} - {{department_name}}
+                            </h5>
+                        </div>
+                    </div>
+                    <div class="col-4 text-end">
+                        <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
+                            <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-lg-3 mb-lg-0 mb-4">
+      <div class="card z-index-2 h-100">
+        <div class="card-header pb-0 pt-3 bg-transparent">
+          <h6 class="text-capitalize">Salary Overview</h6>
+        </div>
+        <div class="card-body p-3">
+          <div class="chart">
+            <canvas id="pie-chart" class="chart-canvas" height="300"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 mb-lg-0 mb-4">
+        <div class="card z-index-2 h-100">
+          <div class="card-header pb-0 pt-3 bg-transparent">
+            <h6 class="text-capitalize">Absences Overview</h6>
+          </div>
+          <div class="card-body p-3">
+            <div class="chart">
+              <canvas id="absences-chart" class="chart-canvas" height="300"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    <div class="col-lg-3 mb-lg-0 mb-4">
+        <div class="card z-index-2 h-100">
+          <div class="card-header pb-0 pt-3 bg-transparent">
+            <h6 class="text-capitalize">Vacations Overview</h6>
+          </div>
+          <div class="card-body p-3">
+            <div class="chart">
+              <canvas id="vacations-chart" class="chart-canvas" height="300"></canvas>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div class="col-lg-3 mb-lg-0 mb-4">
+        <div class="card z-index-2 h-100">
+          <div class="card-header pb-0 pt-3 bg-transparent">
+            <h6 class="text-capitalize">Monthly Absences</h6>
+          </div>
+          <div class="card-body p-3">
+            <div class="chart">
+              <canvas id="absencesChart" class="chart-canvas" height="300"></canvas>
+            </div>
+          </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.min.js" integrity="sha512-L0Shl7nXXzIlBSUUPpxrokqq4ojqgZFQczTYlGjzONGTDAcLremjwaWv5A+EDLnxhQzY5xUZPWLOLqYRkY0Cbw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var ctx = document.getElementById('pie-chart').getContext('2d');
+      var base_pay = JSON.parse('{{ base_pay|safe }}');
+      var additionals = JSON.parse('{{ additionals|safe }}');
+      var myPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Base Salary', 'Additionals'],
+          datasets: [{
+            data: [base_pay, additionals],
+            backgroundColor: ['#825ee4', '#2dce89',],
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+        }
+      });
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+      var ctx = document.getElementById('vacations-chart').getContext('2d');
+      var pending = JSON.parse('{{ pending_vacations|safe }}');
+      var rejected = JSON.parse('{{ rejected_vacations|safe }}');
+      var accepted = JSON.parse('{{ accepted_vacations|safe }}');
+      var myPieChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Accepted', 'Rejected', 'Pending'],
+          datasets: [{
+            data: [accepted, rejected, pending],
+            backgroundColor: ['#2dce89', '#f5365c','#6f42c1'],
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+        }
+      });
+    });
+    document.addEventListener('DOMContentLoaded', function() {
+      var ctx = document.getElementById('absences-chart').getContext('2d');
+      var excused = JSON.parse('{{ excused_absences|safe }}');
+      var unexcused = JSON.parse('{{ unexcused_absences|safe }}');
+      var accepted = JSON.parse('{{ accepted_vacations|safe }}');
+      var myPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Excused', 'Unexcused'],
+          datasets: [{
+            data: [excused, unexcused],
+            backgroundColor: ['#2dce89', '#6f42c1'],
+            hoverOffset: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+        }
+      });
+    });
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        var months = JSON.parse('{{ months|safe }}');
+        var totals = JSON.parse('{{ totals|safe }}');
+        console.log(months);
+        console.log(months);
+        console.log(totals);
+        function getMonthName(monthNumber) {
+          const date = new Date();
+          date.setMonth(monthNumber - 1); // Set the month of the date object (0-11)
+          return date.toLocaleString('default', { month: 'long' });
+      }
+        const ctx = document.getElementById('absencesChart').getContext('2d');
+        const absencesChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: months.map(month => getMonthName(month)), // Adjust labeling as needed
+                datasets: [{
+                    label: 'Monthly Absences',
+                    data: totals,
+                    backgroundColor: '#825ee4',
+                    borderColor: '#825ee4',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+
+</script>
+<script id="months_data" type="application/json">{{ months|json_script:"months_data" }}</script>
+<script id="totals_data" type="application/json">{{ totals|json_script:"totals_data" }}</script>
+{% endblock %}

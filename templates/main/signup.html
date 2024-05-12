@@ -1,0 +1,511 @@
+{% extends 'authBase.html' %}
+{% load static %}
+{% block content %}
+    
+    <body class="">
+    
+        <main class="main-content mt-0 ps">
+            <div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg"
+                style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/signup-cover.jpg'); background-position: top;">
+                <span class="mask bg-gradient-dark opacity-6"></span>
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-5 text-center mx-auto">
+                            <h1 class="text-white mb-2 mt-5">Welcome!</h1>
+                            <p class="text-lead text-white">Register So You Can Access The Management System (SMS)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+<div class="container">
+
+    <div class="row mt-lg-n10 mt-md-n11 mt-n10 justify-content-center">
+        <div class="col-xl-6 col-lg-7 col-md-9 mx-auto">
+            <div class="card z-index-0">
+                <div class="card-body">
+                                        {% if messages %}
+                                        {% for message in messages %}
+                                        <div class="alert alert-{{message.tags}} alert-dismissible fade show mt-2" role="alert">
+                                            <span style="color:white" class="alert-text">{{ message }}</span>
+                                            <button style="color:white" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        {% endfor %}
+                                        {% endif %}
+<form role="form" method="POST" enctype="multipart/form-data" style="max-width: none;">
+    {% csrf_token %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <input type="text" name="first_name" class="form-control" placeholder="First Name"
+                    value="{{ form.first_name.value|default_if_none:'' }}" required>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <input type="text" name="last_name" class="form-control" placeholder="Last Name"
+                    value="{{ form.last_name.value|default_if_none:'' }}" required>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <input type="email" name="email" class="form-control" placeholder="Email"
+            value="{{ form.email.value|default_if_none:'' }}" required>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <input type="password" name="password1" class="form-control" placeholder="Password" required>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <input type="password" name="password2" class="form-control" placeholder="Confirm Password" required>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="birthdate" class="form-label">Birthdate</label>
+                <input type="date" id="birthdate" name="birthdate" class="form-control"
+                    value="{{ form.birthdate.value }}" required>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="pic" class="form-label">Profile Picture</label>
+                <input value="{{form.pic.value}}" type="file" id="pic" name="pic" class="form-control">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="joining_date" class="form-label">Joining Date</label>
+                <input type="date" id="joining_date" name="joining_date" class="form-control"
+                    value="{{ form.joining_date.value }}" required>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone Number</label>
+                <div class="input-group mb-4">
+                    <span class="input-group-text">+966</span>
+                    <input type="text" id="phone" name="phone" class="form-control" placeholder="e.g., 503456789"
+                        value="{{ form.phone.value|default_if_none:'' }}" required>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="mb-3">
+        <label for="countryField" class="form-label">Country</label>
+        {{ form.country }}
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <select id="role" name="role" class="form-select" required onchange="toggleTeachingFields()">
+                    <option disabled selected value="">Select Role</option>
+                    {% for role in roles %}
+                        
+                <option value="{{role.id}}" data-role="{{role.role}}" {% if form.role.value == role.role %} selected{% endif %}>
+                    {{role.role}}</option>
+
+                    {% endfor %}
+
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <select id="department" name="department" class="form-select" required>
+                    <option disabled selected value="">Select Department</option>
+                    <!-- Options will be added by JavaScript -->
+                </select>
+            </div>
+        </div>
+    </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3" id="teach_course_container" style="display: none;">
+                                    <label for="teach_course" class="form-label">Teach Course</label>
+                                    <input type="text" id="teach_course" name="teach_course" class="form-control" placeholder="Course Name"
+                                        value="{{ form.teach_course.value|default_if_none:'' }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3" id="hours_worked_per_week_container" style="display: none;">
+                                    <label for="hours_worked_per_week" class="form-label">Hours Worked per Week</label>
+                                    <input type="number" id="hours_worked_per_week" name="hours_worked_per_week" class="form-control"
+                                        placeholder="e.g., 40" value="{{ form.hours_worked_per_week.value|default_if_none:'' }}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <input type="number" value="{{form.years_of_exp.value}}" name="years_of_exp" class="form-control"
+                                placeholder="Years of Experience" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="number" value="{{form.overtime_hours.value}}" name="overtime_hours" class="form-control"
+                                placeholder="Overtime Hours">
+                        </div>
+
+                        <div class="form-check form-check-info text-start">
+                            <input class="form-check-input" type="checkbox" name="terms" id="flexCheckDefault" required>
+                            <label class="form-check-label" for="flexCheckDefault">
+                                I agree to the <a href="#" class="text-dark font-weight-bolder">Terms and Conditions</a>
+                            </label>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2">Sign up</button>
+                        </div>
+                        <p class="text-sm mt-3 mb-0">Already have an account? <a href="{% url 'login' %}"
+                                class="text-dark font-weight-bolder">Sign in</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+            <div class="ps__rail-x" style="left: 0px; bottom: 0px;">
+                <div class="ps__thumb-x" tabindex="0" style="left: 0px; width: 0px;"></div>
+            </div>
+            <div class="ps__rail-y" style="top: 0px; right: 0px;">
+                <div class="ps__thumb-y" tabindex="0" style="top: 0px; height: 0px;"></div>
+            </div>
+        </main>
+    
+        <footer class="footer py-5">
+            <div class="container">
+
+                <div class="row">
+                    <div class="col-8 mx-auto text-center mt-1">
+                        <p class="mb-0 text-secondary">
+                            Copyright ©
+                            <script>
+                                document.write(new Date().getFullYear())
+                            </script> SMS by .
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    
+        <!-- <script>
+    function toggleTeachingFields() {
+        var roleSelect = document.getElementById('role');
+        var teachCourseContainer = document.getElementById('teach_course_container');
+        var hoursWorkedPerWeekContainer = document.getElementById('hours_worked_per_week_container');
+        var teachCourseInput = document.getElementById('teach_course');
+        var hoursWorkedPerWeekInput = document.getElementById('hours_worked_per_week');
+
+        if (roleSelect.value === 'Teaching') {
+            console.log("ssss")
+            teachCourseContainer.style.display = 'block';
+            hoursWorkedPerWeekContainer.style.display = 'block';
+            teachCourseInput.required = true;
+            hoursWorkedPerWeekInput.required = true;
+        } else {
+            teachCourseContainer.style.display = 'none';
+            hoursWorkedPerWeekContainer.style.display = 'none';
+            teachCourseInput.required = false;
+            hoursWorkedPerWeekInput.required = false;
+        }
+    }
+
+        </script> -->
+    
+        <script src="{% static 'assets/js/core/popper.min.js' %}"></script>
+        <script src="{% static 'assets/js/core/bootstrap.min.js' %}"></script>
+        <script src="{% static 'assets/js/plugins/perfect-scrollbar.min.js' %}"></script>
+        <script src="{% static 'assets/js/plugins/smooth-scrollbar.min.js' %}"></script>
+        <script>
+            var win = navigator.platform.indexOf('Win') > -1;
+            if (win && document.querySelector('#sidenav-scrollbar')) {
+                var options = {
+                    damping: '0.5'
+                }
+                Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+            }
+        </script>
+    
+        <script async="" defer="" src="https://buttons.github.io/buttons.js"></script>
+    
+        <script src="{% static 'assets/js/argon-dashboard.min.js?v=2.0.4' %} "></script>
+        <script defer=""
+            src="https://static.cloudflareinsights.com/beacon.min.js/v84a3a4012de94ce1a686ba8c167c359c1696973893317"
+            integrity="sha512-euoFGowhlaLqXsPWQ48qSkBSCFs3DPRyiwVu3FjR96cMPx+Fr+gpWRhIafcHwqwCqWS42RZhIudOvEI+Ckf6MA=="
+            data-cf-beacon="{&quot;rayId&quot;:&quot;867ac7e1983941c4&quot;,&quot;version&quot;:&quot;2024.3.0&quot;,&quot;token&quot;:&quot;1b7cbb72744b40c580f8633c6b62637e&quot;}"
+            crossorigin="anonymous"></script>
+    
+    
+        <style>
+            #ofBar {
+                display: none !important;
+                z-index: 0;
+                font-size: 16px;
+                color: #333;
+                padding: 16px 40px;
+                font-weight: 400;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: fixed;
+                top: 40px;
+                width: 80%;
+                border-radius: 8px;
+                left: 0;
+                right: 0;
+                margin-left: auto;
+                margin-right: auto;
+                box-shadow: 0 13px 27px -5px rgba(50, 50, 93, 0.25), 0 8px 16px -8px rgba(0, 0, 0, 0.3), 0 -6px 16px -6px rgba(0, 0, 0, 0.025);
+            }
+    
+            #ofBar-logo img {
+                height: 50px;
+            }
+    
+            #ofBar-content {
+                display: inline;
+                padding: 0 15px;
+            }
+    
+            #ofBar-right {
+                display: flex;
+                align-items: center;
+            }
+    
+            #ofBar b {
+                font-size: 15px !important;
+            }
+    
+            #count-down {
+                display: initial;
+                padding-left: 10px;
+                font-weight: bold;
+                font-size: 20px;
+            }
+    
+            #close-bar {
+                font-size: 17px;
+                opacity: 0.5;
+                cursor: pointer;
+                color: #808080;
+                font-weight: bold;
+            }
+    
+            #close-bar:hover {
+                opacity: 1;
+            }
+    
+            #btn-bar {
+                background-image: linear-gradient(310deg, #141727 0%, #3A416F 100%);
+                color: #fff;
+                border-radius: 4px;
+                padding: 10px 20px;
+                font-weight: bold;
+                text-transform: uppercase;
+                text-align: center;
+                font-size: 12px;
+                opacity: .95;
+                margin-right: 20px;
+                box-shadow: 0 5px 10px -3px rgba(0, 0, 0, .23), 0 6px 10px -5px rgba(0, 0, 0, .25);
+            }
+    
+            #btn-bar,
+            #btn-bar:hover,
+            #btn-bar:focus,
+            #btn-bar:active {
+                text-decoration: none !important;
+                color: #fff !important;
+            }
+    
+            #btn-bar:hover {
+                opacity: 1;
+            }
+    
+            #btn-bar span,
+            #ofBar-content span {
+                color: red;
+                font-weight: 700;
+            }
+    
+            #oldPriceBar {
+                text-decoration: line-through;
+                font-size: 16px;
+                color: #fff;
+                font-weight: 400;
+                top: 2px;
+                position: relative;
+            }
+    
+            #newPrice {
+                color: #fff;
+                font-size: 19px;
+                font-weight: 700;
+                top: 2px;
+                position: relative;
+                margin-left: 7px;
+            }
+    
+            #fromText {
+                font-size: 15px;
+                color: #fff;
+                font-weight: 400;
+                margin-right: 3px;
+                top: 0px;
+                position: relative;
+            }
+    
+            #pls-contact-me-on-email {
+                position: absolute;
+                color: white;
+                width: 100%;
+                height: 100%;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: rgba(0, 0, 0, 0.9);
+                z-index: 999;
+                cursor: pointer;
+                padding-top: 100px;
+                padding-left: 50px;
+            }
+    
+            @media(max-width: 991px) {}
+    
+            @media (max-width: 768px) {
+                #count-down {
+                    display: block;
+                    margin-top: 15px;
+                }
+    
+                #ofBar {
+                    flex-direction: column;
+                    align-items: normal;
+                }
+    
+                #ofBar-content {
+                    margin: 15px 0;
+                    text-align: center;
+                    font-size: 18px;
+                }
+    
+                #ofBar-right {
+                    justify-content: flex-end;
+                }
+            }
+        </style>
+    
+        <script type="text/javascript"
+            id="">function setCookie(a, d, c) { var b = new Date; b.setTime(b.getTime() + 864E5 * c); c = "expires\x3d" + b.toUTCString(); document.cookie = a + "\x3d" + d + ";" + c + ";path\x3d/" }
+                function readDomain() {
+                    domain = window.location.hostname; if ("hrm.newflex.co.kr" == domain) {
+                        console.log("Remove the script"); var a = document.createElement("div"); a.setAttribute("id", "pls-contact-me-on-email"); a.innerHTML = "\x3ch1\x3ePlease Remove the Stolen Google Analytics from \x3ca href\x3d'https://www.creative-tim.com/?ref\x3dstolen-website' target\x3d'_blank' '\x3ecreative-tim.com\x3c/a\x3e Please send an email to beni@creative-tim.com to help you remove our scripts.\x3c/h1\x3e"; document.body.insertBefore(a,
+                            document.body.firstChild)
+                    }
+                } function readCookie(a) { a += "\x3d"; for (var d = document.cookie.split(";"), c = 0; c < d.length; c++) { for (var b = d[c]; " " == b.charAt(0);)b = b.substring(1, b.length); if (0 == b.indexOf(a)) return b.substring(a.length, b.length) } return null }
+                function createOfferBar() {
+                    readDomain(); var a = document.createElement("div"); a.setAttribute("id", "ofBar"); a.innerHTML = "\x3cdiv id\x3d'ofBar-logo'\x3e \x3cimg alt\x3d'creative-tim-logo' src\x3d'https://s3.amazonaws.com/creativetim_bucket/static-assets/logo-ct-black.png'\x3e\x3c/div\x3e\x3cdiv id\x3d'ofBar-content'\x3e\x3cb\x3e50% off Creative Tim Club!\x3c/b\x3e \ud83c\udf89 Lifetime access to all current \x26 future products. Limited time offer! \u2728\x3c/div\x3e\x3cdiv id\x3d'ofBar-right'\x3e\x3ca href\x3d'https://www.creative-tim.com/club?ref\x3dct-demos' target\x3d'_blank' id\x3d'btn-bar'\x3eView Offer\x3c/a\x3e\x3ca id\x3d'close-bar'\x3e\u00d7\x3c/a\x3e\x3c/div\x3e"; document.body.insertBefore(a,
+                        document.body.firstChild)
+                } function closeOfferBar() { document.getElementById("ofBar").setAttribute("style", "display:none"); setCookie("view_offer_bar", "true", 1) } var value = readCookie("view_offer_bar"); null == value && (createOfferBar(), document.getElementById("close-bar").addEventListener("click", closeOfferBar));</script>
+        <script type="text/javascript"
+            id="">!function (d, g, e) {
+                    d.TiktokAnalyticsObject = e; var a = d[e] = d[e] || []; a.methods = "page track identify instances debug on off once ready alias group enableCookie disableCookie".split(" "); a.setAndDefer = function (b, c) { b[c] = function () { b.push([c].concat(Array.prototype.slice.call(arguments, 0))) } }; for (d = 0; d < a.methods.length; d++)a.setAndDefer(a, a.methods[d]); a.instance = function (b) { b = a._i[b] || []; for (var c = 0; c < a.methods.length; c++)a.setAndDefer(b, a.methods[c]); return b }; a.load = function (b, c) {
+                        var f = "https://analytics.tiktok.com/i18n/pixel/events.js";
+                        a._i = a._i || {}; a._i[b] = []; a._i[b]._u = f; a._t = a._t || {}; a._t[b] = +new Date; a._o = a._o || {}; a._o[b] = c || {}; c = document.createElement("script"); c.type = "text/javascript"; c.async = !0; c.src = f + "?sdkid\x3d" + b + "\x26lib\x3d" + e; b = document.getElementsByTagName("script")[0]; b.parentNode.insertBefore(c, b)
+                    }; a.load("CC6UAQBC77U7GVKHLC4G"); a.page()
+                }(window, document, "ttq");</script>
+        <iframe id="_hjSafeContext_67620791" title="_hjSafeContext" tabindex="-1" aria-hidden="true" src="about:blank"
+            style="display: none !important; width: 1px !important; height: 1px !important; opacity: 0 !important; pointer-events: none !important;"></iframe>
+    </body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- If jQuery isn't already included -->
+<script type="text/javascript">
+
+
+
+    function toggleTeachingFields() {
+        var roleSelect = document.getElementById('role');
+        var selectedOption = roleSelect.options[roleSelect.selectedIndex];
+        var selectedRole = selectedOption.getAttribute('data-role');
+
+        var teachCourseContainer = document.getElementById('teach_course_container');
+        var hoursWorkedPerWeekContainer = document.getElementById('hours_worked_per_week_container');
+        var teachCourseInput = document.getElementById('teach_course');
+        var hoursWorkedPerWeekInput = document.getElementById('hours_worked_per_week');
+
+        if (selectedRole === 'Teaching') {
+            console.log("Teaching selected");
+            teachCourseContainer.style.display = 'block';
+            hoursWorkedPerWeekContainer.style.display = 'block';
+            teachCourseInput.required = true;
+            hoursWorkedPerWeekInput.required = true;
+            
+        } else {
+            console.log("Teaching not selected");
+            teachCourseContainer.style.display = 'none';
+            hoursWorkedPerWeekContainer.style.display = 'none';
+            teachCourseInput.required = false;
+            hoursWorkedPerWeekInput.required = false;
+        }
+        // Get the selected role ID
+        var role_id = $('#role').val();
+
+        // Make the AJAX call
+        $.ajax({
+            url: '/ajax/get_departments/' + role_id + '/',
+            type: 'GET',
+            success: function (departments) {
+                var departmentSelect = $('#department'); // Assuming your department select has id="department"
+                departmentSelect.empty(); // Remove old options
+                departmentSelect.append('<option selected disabled value="">Select Department</option>');
+
+                $.each(departments, function (index, department) {
+                    departmentSelect.append('<option value="' + department.id + '">' + department.department + '</option>');
+                });
+            }
+        });
+    }
+    // Function that will be invoked when a department is selected
+    function handleDepartmentSelection(departmentId) {
+        console.log("Selected Department ID:", departmentId);
+        $.ajax({
+            url: '/ajax/get_department/' + departmentId + '/',
+            type: 'GET',
+            success: function (department_weekly_hours) {
+                console.log(department_weekly_hours);
+                var hoursWorkedPerWeekInput = document.getElementById('hours_worked_per_week');
+                hoursWorkedPerWeekInput.setAttribute('max', department_weekly_hours);
+            }
+        });
+    }
+
+    // Get the select element
+    var departmentSelect = document.getElementById('department');
+
+    // Add event listener for the 'change' event
+    departmentSelect.addEventListener('change', function() {
+
+        var selectedDepartmentId = this.value;
+
+        // Invoke the function with the selected department ID
+        handleDepartmentSelection(selectedDepartmentId);
+    });
+</script>
+
+
+{% endblock content %}
